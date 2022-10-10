@@ -1,37 +1,33 @@
-import Directory from './components/directory/directory.component';
+import { Routes, Route } from 'react-router-dom';
+import Navigation from './routes/navigation/navigation.component';
+import Home from './routes/home/home.component';
+import Signin from './routes/sign-in/sigin-in.component';
+import Contact from './routes/contact/contact.component';
 
 const App = () => {
 
-  const categories = [
-    {
-      "id": 1,
-      "title": "hats",
-      "imageUrl": "https://i.ibb.co/cvpntL1/hats.png"
-    },
-    {
-      "id": 2,
-      "title": "jackets",
-      "imageUrl": "https://i.ibb.co/px2tCc3/jackets.png"
-    },
-    {
-      "id": 3,
-      "title": "sneakers",
-      "imageUrl": "https://i.ibb.co/0jqHpnp/sneakers.png"
-    },
-    {
-      "id": 4,
-      "title": "womens",
-      "imageUrl": "https://i.ibb.co/GCCdy8t/womens.png"
-    },
-    {
-      "id": 5,
-      "title": "mens",
-      "imageUrl": "https://i.ibb.co/R70vBrQ/men.png"
-    }    
-]
+  const Shop = () => {
+
+    return (
+      <div>
+        <div><h1>Shop page</h1></div>
+      </div>
+    ) 
+
+  }
 
   return (
-    <Directory categories={categories} />
+    // <Routes> = enable routing
+    // <Route path='' element=> = if path matches, show element
+    <Routes>  
+        <Route path='/' element={ <Navigation /> } >
+          <Route index element={ <Home />} /> 
+          <Route path='/shop/' element={ <Shop />} /> 
+          <Route path='/contact/' element={ <Contact />} /> 
+          <Route path='/signin/' element={ <Signin />} /> 
+        </Route>
+    </Routes>
+  
   );
 }
 
