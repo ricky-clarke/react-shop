@@ -2,9 +2,10 @@ import {  initializeApp } from 'firebase/app'; // Creates and initializes a Fire
 
 import { 
 getAuth,
-siginInWithRedirect,
+signInWithRedirect,
 signInWithPopup,
 GoogleAuthProvider,
+createUserWithEmailAndPassword
 } from 'firebase/auth';
 
 import {
@@ -28,22 +29,25 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 //  Give provider instance
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
 // Custom params - tell google auth provider how to behave
-provider.setCustomParameters( {
+googleProvider.setCustomParameters( {
     prompt: "select_account" // force user to select account when interacting
 });
 
 export const auth = getAuth();
-
-export const signInwithGooglePopup = () => signInWithPopup(auth, provider);
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider);
 
 // Tell firebase if we want to get, set a document (points to DB)
 export const db = getFirestore();
 
 // Take data and store in firebase DB
-export const createUserDocumentFromAuth = async (userAuth) => {
+export const createUserDocumentFromAuth = async (userAuth,
+  additionalInformation = {}) => {
+
+  if(!userAuth) return;
 
   // is there an existing dco reference (object)
   const userDocRef = doc(db, 'users', userAuth.uid); // userAuth.uid = unique ID 
@@ -62,7 +66,8 @@ export const createUserDocumentFromAuth = async (userAuth) => {
     await setDoc(userDocRef, { 
       displayName,
       email,
-      createdAt
+      createdAt,
+      ...additionalInformation
     });
   } catch(error) {
     console.log('error creting the user', error.message);
@@ -72,4 +77,9 @@ export const createUserDocumentFromAuth = async (userAuth) => {
 
 return userDocRef;
 
+};
+
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return;
+  return await createUserWithEmailAndPassword(auth, email, password);
 };
