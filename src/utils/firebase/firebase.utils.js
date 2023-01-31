@@ -8,7 +8,7 @@ GoogleAuthProvider,
 createUserWithEmailAndPassword,
 signInWithEmailAndPassword,
 signOut,
-onAuthStateChanged
+onAuthStateChanged,
 } from 'firebase/auth';
 
 import {
@@ -16,6 +16,10 @@ import {
   doc, // Get a doc instanse
   getDoc, // Access data in docs
   setDoc, // set data
+  collection, // allow to get collection ref
+  writeBatch,
+  query,
+  getDocs
 } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
@@ -45,6 +49,42 @@ export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googlePro
 
 // Tell firebase if we want to get, set a document (points to DB)
 export const db = getFirestore();
+
+export const addCollectionandDocuments = async (
+  collectionKey,
+  objectsToAdd) => {
+
+  const collectionRef = collection(db, collectionKey);
+  const batch = writeBatch(db);
+
+  objectsToAdd.forEach( (object ) => {
+
+    const docRef = doc(collectionRef, object.title.toLowerCase());
+    batch.set(docRef, object);
+    });
+
+    await batch.commit();
+    console.log('done');
+
+};
+
+export const getCategoriesAndDocuments = async () => {
+
+  const collectionRef = collection(db, 'categories');
+
+  const q = query(collectionRef);
+
+  const querySnapshop = await getDocs(q);
+
+const categoryMap = querySnapshop.docs.reduce( (acc, docSnapshot) => {
+  const { title, items} = docSnapshot.data();
+  acc[title.toLowerCase()] = items;
+  return acc;
+}, {});
+
+return categoryMap;
+
+}
 
 // Take data and store in firebase DB
 export const createUserDocumentFromAuth = async (userAuth,
