@@ -64,7 +64,7 @@ const defaultFormFields = {
                 <FormInput
                     label ="Email"
                     type="email"
-                    required
+                   // required
                     onChange={handleChange}
                     name='email'
                     value={email
@@ -73,7 +73,7 @@ const defaultFormFields = {
                 <FormInput
                    label ="Password"
                   type="password"
-                  required
+                  // required
                   onChange={handleChange}
                   name='password'
                   value={password} />
